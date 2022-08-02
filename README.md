@@ -1,24 +1,29 @@
-Added trigger function to update a flag whenever change made to books table 
+Added trigger function in postgresql which updates a boolean flag(field called 'table_updated') in books table,  whenever name field of book gets updated.
 
-#steps to run the app
+#steps to install/run the app
 
-Do bundle install running 
-bundle install
-yarn install --check-files
-create and migrate DB
+run- 'bundle install'
+run- yarn install --check-files
 setup DB settings in database.yml
-rake db:create, rake db:migrate
-
-#added 2 test books
-rake db:seed 
+create and migrate DB- rake db:create, rake db:migrate
+rake db:seed to add test entry into books table
 
 make sure redis server is running and run sidekiq
 
 bundle exec sidekiq
 
-modify the update check time interval in config/schedule.rb
-add whenever to run via crontab running below command
-whenever --update-crontab
+modify the db update check time interval in config/schedule.rb
+run- whenever --update-crontab (which will add job to crontab)
 
-To test, you need to update name of book field via console, 
+To test the functionality, You can load book via console and update the name of book
+i.e. 
+
+rails c
+book = Book.last
+book.name = "test123"
+book.save!
+
+This will update the table_updated flag to 'true' hence will catch via cronjob,
+
+You can access sidekiq UI via - http://localhost:3000/sidekiq  (mounted it in routes)
 
